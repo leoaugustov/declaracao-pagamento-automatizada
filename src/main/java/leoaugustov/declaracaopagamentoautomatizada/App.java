@@ -1,7 +1,5 @@
 package leoaugustov.declaracaopagamentoautomatizada;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -11,30 +9,42 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.gmail.Gmail;
+
 public class App {
 	
-    public static void main(String[] args) throws IOException, GeneralSecurityException {
-    	if(args.length < 3) {
-    		throw new IllegalArgumentException("Informe o caminho do WebDriver, o R.A. e a senha para login no portal respectivamente!");
-    	}
+	private static final JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+	
+    public static void main(String[] args) throws Exception {
+    	final Parametros parametros = new Parametros();
     	
-    	final String caminhoWebDriver = args[0];
-    	final String ra = args[1];
-    	final String senha = args[2];
-    	
-    	System.setProperty("webdriver.chrome.driver", caminhoWebDriver);
+    	System.setProperty("webdriver.chrome.driver", parametros.getCaminhoWebDriver());
         WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments("--headless"));
         
         try {
         	DataUltimaParcelaPaga dataUltimaParcelaPaga = new DataUltimaParcelaPaga();
         	Navegador navegador = new Navegador(driver, new WebDriverWait(driver, 10));
-            YearMonth data = transformarData(navegador.pegarDataUltimaParcelaPaga(ra, senha));
+            YearMonth data = transformarData(navegador.pegarDataUltimaParcelaPaga(parametros.getRegistroAcademicoUna(), parametros.getSenhaUna()));
             
             if(dataUltimaParcelaPaga.pegar().isBefore(data)) {
             	navegador.solicitarEnvioDeclaracaoPagamentoUltimaParcelaPaga();
             	
             	dataUltimaParcelaPaga.atualizar(data);
             }
+            
+            Thread.sleep(10000); // aguarda para garantir que o email vai estar na caixa de entrada.
+            
+        	ServicoAutenticacaoGoogle servicoAutenticacao = new ServicoAutenticacaoGoogle(JSON_FACTORY, parametros);
+        	NetHttpTransport netHttpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        	Gmail gmail = new Gmail.Builder(netHttpTransport, JSON_FACTORY, servicoAutenticacao.gerarCredenciais(netHttpTransport))
+    				.setApplicationName("Declaraçao de Pagamento Automatizada")
+    				.build();
+        	
+        	CaixaEntradaEmail caixaEntradaEmail = new CaixaEntradaEmail(gmail, parametros.getUsuarioGmail());
+        	System.out.println(caixaEntradaEmail.buscarLinkDeclaracaoPagamento());
         }finally {
         	driver.quit();
         }
