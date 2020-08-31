@@ -38,27 +38,27 @@ public class App {
             	navegador.solicitarEnvioDeclaracaoPagamentoUltimaParcelaPaga();
             	
             	dataUltimaParcelaPaga.atualizar(data);
+            	
+                Thread.sleep(10000); // aguarda para garantir que o email vai estar na caixa de entrada.
+                
+            	ServicoAutenticacaoGoogle servicoAutenticacao = new ServicoAutenticacaoGoogle(JSON_FACTORY, parametros);
+            	NetHttpTransport netHttpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            	
+            	Gmail gmail = new Gmail.Builder(netHttpTransport, JSON_FACTORY, servicoAutenticacao.gerarCredenciais(netHttpTransport))
+        				.setApplicationName(NOME_APLICACAO)
+        				.build();
+            	
+            	CaixaEntradaEmail caixaEntradaEmail = new CaixaEntradaEmail(gmail, parametros.getUsuarioGmail());
+            	
+            	Drive drive = new Drive.Builder(netHttpTransport, JSON_FACTORY, servicoAutenticacao.gerarCredenciais(netHttpTransport))
+        				.setApplicationName(NOME_APLICACAO)
+        				.build();
+            	
+            	ArquivosNuvem nuvem = new ArquivosNuvem(drive);
+            	
+            	byte[] arquivo = IOUtils.toByteArray(new URL(caixaEntradaEmail.buscarLinkDeclaracaoPagamento()));
+            	nuvem.salvar(data, new ByteArrayContent("application/pdf", arquivo));
             }
-            
-            Thread.sleep(10000); // aguarda para garantir que o email vai estar na caixa de entrada.
-            
-        	ServicoAutenticacaoGoogle servicoAutenticacao = new ServicoAutenticacaoGoogle(JSON_FACTORY, parametros);
-        	NetHttpTransport netHttpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        	
-        	Gmail gmail = new Gmail.Builder(netHttpTransport, JSON_FACTORY, servicoAutenticacao.gerarCredenciais(netHttpTransport))
-    				.setApplicationName(NOME_APLICACAO)
-    				.build();
-        	
-        	CaixaEntradaEmail caixaEntradaEmail = new CaixaEntradaEmail(gmail, parametros.getUsuarioGmail());
-        	
-        	Drive drive = new Drive.Builder(netHttpTransport, JSON_FACTORY, servicoAutenticacao.gerarCredenciais(netHttpTransport))
-    				.setApplicationName(NOME_APLICACAO)
-    				.build();
-        	
-        	ArquivosNuvem nuvem = new ArquivosNuvem(drive);
-        	
-        	byte[] arquivo = IOUtils.toByteArray(new URL(caixaEntradaEmail.buscarLinkDeclaracaoPagamento()));
-        	nuvem.salvar(data, new ByteArrayContent("application/pdf", arquivo));
         }finally {
         	driver.quit();
         }
