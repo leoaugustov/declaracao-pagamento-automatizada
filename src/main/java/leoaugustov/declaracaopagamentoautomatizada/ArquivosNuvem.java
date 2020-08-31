@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Optional;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.services.drive.Drive;
@@ -14,15 +15,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ArquivosNuvem {
 
-	private static final String ID_DIRETORIO_PARA_SALVAR = "1MNzvaikMhdz8CQt2v0hWKoGUolhblMJW";
 	private final Drive drive;
 	
 	
 	
-	public void salvar(YearMonth dataReferencia, ByteArrayContent conteudoArquivo) throws IOException {
+	public void salvar(YearMonth dataReferencia, Optional<String> idDiretorioParaSalvar, 
+			ByteArrayContent conteudoArquivo) throws IOException {
+		
     	File metaDados = new File();
     	metaDados.setName(formatarDataComoNomeArquivo(dataReferencia));
-    	metaDados.setParents(Arrays.asList(ID_DIRETORIO_PARA_SALVAR));
+    	
+    	if(idDiretorioParaSalvar.isPresent()) {
+    		metaDados.setParents(Arrays.asList(idDiretorioParaSalvar.get()));
+    	}	
     	
 		drive.files().create(metaDados, conteudoArquivo).execute();
 	}

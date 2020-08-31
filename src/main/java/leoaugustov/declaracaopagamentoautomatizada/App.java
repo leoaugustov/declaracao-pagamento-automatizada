@@ -57,7 +57,7 @@ public class App {
             	ArquivosNuvem nuvem = new ArquivosNuvem(drive);
             	
             	byte[] arquivo = IOUtils.toByteArray(new URL(caixaEntradaEmail.buscarLinkDeclaracaoPagamento()));
-            	nuvem.salvar(data, new ByteArrayContent("application/pdf", arquivo));
+            	nuvem.salvar(data, parametros.getIdDiretorioParaSalvarDrive(), new ByteArrayContent("application/pdf", arquivo));
             }
         }finally {
         	driver.quit();

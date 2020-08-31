@@ -2,6 +2,7 @@ package leoaugustov.declaracaopagamentoautomatizada;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.Properties;
 
 public class Parametros {
@@ -37,20 +38,30 @@ public class Parametros {
 		return PARAMETROS.getProperty("una.senha");
 	}
 	
+	public Optional<String> getIdDiretorioParaSalvarDrive() {
+		String idDiretorio = PARAMETROS.getProperty("drive.diretorio-para-salvar");
+		
+		if(idDiretorio == null || idDiretorio.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(idDiretorio);
+	}
+	
 	public String getClientId() {
-		return PARAMETROS.getProperty("client-id");
+		return PARAMETROS.getProperty("google-api.client-id");
 	}
 	
 	public String getSecret() {
-		return PARAMETROS.getProperty("secret");
+		return PARAMETROS.getProperty("google-api.secret");
 	}
 	
 	public String getAccessToken() {
-		return PARAMETROS.getProperty("access-token");
+		return PARAMETROS.getProperty("google-api.access-token");
 	}
 	
 	public String getRefreshToken() {
-		return PARAMETROS.getProperty("refresh-token");
+		return PARAMETROS.getProperty("google-api.refresh-token");
 	}
 	
 }
