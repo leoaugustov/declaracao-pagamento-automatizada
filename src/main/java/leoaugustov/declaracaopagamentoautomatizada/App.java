@@ -18,12 +18,15 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.gmail.Gmail;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class App {
 	
 	private static final String NOME_APLICACAO = "Declaraçao de Pagamento Automatizada";
 	private static final JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
     	Parametros parametros = new Parametros();
     	
     	System.setProperty("webdriver.chrome.driver", parametros.getCaminhoWebDriver());
@@ -36,6 +39,8 @@ public class App {
             
             if(dataUltimaParcelaPaga.pegar().isPresent() == false || dataUltimaParcelaPaga.pegar().get().isBefore(data)) {
             	navegador.solicitarEnvioDeclaracaoPagamentoUltimaParcelaPaga();
+            	
+            	log.info("Documento enviado para o email.");
             	
             	dataUltimaParcelaPaga.atualizar(data);
             	
@@ -58,7 +63,14 @@ public class App {
             	
             	byte[] arquivo = IOUtils.toByteArray(new URL(caixaEntradaEmail.buscarLinkDeclaracaoPagamento()));
             	nuvem.salvar(data, parametros.getIdDiretorioParaSalvarDrive(), new ByteArrayContent("application/pdf", arquivo));
+            	
+            	log.info("A declaração de pagamento da mensalidade do mês " +data+ " foi salva no Google Drive com sucesso.");
+            }else {
+            	log.info("O documento referente a data " +data.plusMonths(1)+ " ainda não está disponível.");
             }
+        
+        }catch(Exception e) {
+        	log.error("Ocorreu um erro durante o processo.", e);
         }finally {
         	driver.quit();
         }

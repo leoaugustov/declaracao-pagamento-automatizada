@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%date{dd/MM/yyyy HH:mm:ss} %level [%t] %C: %msg%n%throwable"/>
+        </Console>
+        <File name="ArquivoExterno" fileName="app-${date:yyyyMM}.log">
+        	<PatternLayout pattern="%date{dd/MM/yyyy HH:mm:ss} %level [%t] %C: %msg%n%throwable"/>
+        </File>
+	</Appenders>
+	
+	<Loggers>
+		<Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="ArquivoExterno"/>
+        </Root>
+	</Loggers>
+</Configuration>
