@@ -2,6 +2,8 @@
 # Created by https://www.gitignore.io/api/java,maven,eclipse,intellij,netbeans,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=java,maven,eclipse,intellij,netbeans,visualstudiocode
 
+data-ultima-parcela-paga.txt
+
 ### Eclipse ###
 .metadata
 bin/

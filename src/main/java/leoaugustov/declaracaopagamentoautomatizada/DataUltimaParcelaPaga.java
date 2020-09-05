@@ -5,19 +5,31 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.YearMonth;
+import java.util.Optional;
 
 public class DataUltimaParcelaPaga {
 
-	private static final String NOME_ARQUIVO = "src/main/resources/data-ultima-parcela-paga.txt";
+	private static final String NOME_ARQUIVO = "data-ultima-parcela-paga.txt";
 	
 	public void atualizar(YearMonth data) throws IOException {
-		Path caminho = Paths.get(NOME_ARQUIVO);
-	    Files.write(caminho, data.toString().getBytes());
+		Path referenciaArquivo = Paths.get(NOME_ARQUIVO);
+		
+		if(Files.exists(referenciaArquivo) == false) {
+			Files.createFile(referenciaArquivo);
+		}
+		
+		Files.write(referenciaArquivo, data.toString().getBytes());
 	}
 	
-	public YearMonth pegar() throws IOException {
-		Path caminho = Paths.get(NOME_ARQUIVO);
-		return YearMonth.parse(Files.readAllLines(caminho).get(0));
+	public Optional<YearMonth> pegar() throws IOException {
+		Path referenciaArquivo = Paths.get(NOME_ARQUIVO);
+		
+		YearMonth data = null;
+		if(Files.exists(referenciaArquivo)) {
+			data = YearMonth.parse(Files.readAllLines(referenciaArquivo).get(0));
+		}
+		
+		return Optional.ofNullable(data);
 	}
 	
 }

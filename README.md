@@ -24,10 +24,10 @@ Para conseguir os tokens de acesso aos serviços do Google, siga esse [tutorial]
 ### Informe os parâmetros do projeto
 No arquivo [app.properties](https://github.com/leoaugustov/declaracao-pagamento-automatizada/blob/master/src/main/resources/app.properties) preencha as propriedades necessárias. O usuário do Gmail informado deve ser o mesmo e-mail para onde o sistema da faculdade vai enviar o documento. 
 
-No arquivo [data-ultima-parcela-paga.txt](https://github.com/leoaugustov/declaracao-pagamento-automatizada/blob/master/src/main/resources/data-ultima-parcela-paga.txt) coloque a data do mês anterior ao atual no formato AAAA-MM. Depois da primeira execução do projeto, essa data será gerenciada automaticamente.
-
 ### Execute o projeto
 Execute a classe [App](https://github.com/leoaugustov/declaracao-pagamento-automatizada/blob/master/src/main/java/leoaugustov/declaracaopagamentoautomatizada/App.java).
+
+> Após a primeira execução um arquivo será criado no diretório do projeto (ou no diretório do artefato gerado) para armazenar a data da última parcela paga.
 
 ## Construído com
 - [Selenium](https://www.selenium.dev/documentation/en/)

@@ -34,7 +34,7 @@ public class App {
         	Navegador navegador = new Navegador(driver, new WebDriverWait(driver, 10));
             YearMonth data = transformarData(navegador.pegarDataUltimaParcelaPaga(parametros.getRegistroAcademicoUna(), parametros.getSenhaUna()));
             
-            if(dataUltimaParcelaPaga.pegar().isBefore(data)) {
+            if(dataUltimaParcelaPaga.pegar().isPresent() == false || dataUltimaParcelaPaga.pegar().get().isBefore(data)) {
             	navegador.solicitarEnvioDeclaracaoPagamentoUltimaParcelaPaga();
             	
             	dataUltimaParcelaPaga.atualizar(data);
