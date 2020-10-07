@@ -42,8 +42,6 @@ public class App {
             	
             	log.info("Documento enviado para o email.");
             	
-            	dataUltimaParcelaPaga.atualizar(data);
-            	
                 Thread.sleep(10000); // aguarda para garantir que o email vai estar na caixa de entrada.
                 
             	ServicoAutenticacaoGoogle servicoAutenticacao = new ServicoAutenticacaoGoogle(JSON_FACTORY, parametros);
@@ -64,6 +62,7 @@ public class App {
             	byte[] arquivo = IOUtils.toByteArray(new URL(caixaEntradaEmail.buscarLinkDeclaracaoPagamento()));
             	nuvem.salvar(data, parametros.getIdDiretorioParaSalvarDrive(), new ByteArrayContent("application/pdf", arquivo));
             	
+            	dataUltimaParcelaPaga.atualizar(data);
             	log.info("A declaração de pagamento da mensalidade do mês " +data+ " foi salva no Google Drive com sucesso.");
             }else {
             	log.info("O documento referente a data " +data.plusMonths(1)+ " ainda não está disponível.");

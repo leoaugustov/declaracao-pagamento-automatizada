@@ -5,7 +5,7 @@
             <PatternLayout pattern="%date{dd/MM/yyyy HH:mm:ss} %level [%t] %C: %msg%n%throwable"/>
         </Console>
         <File name="ArquivoExterno" fileName="app-${date:yyyyMM}.log">
-        	<PatternLayout pattern="%date{dd/MM/yyyy HH:mm:ss} %level [%t] %C: %msg%n%throwable"/>
+        	<PatternLayout pattern="%date{dd/MM/yyyy HH:mm:ss} %level [%t] %C: %msg%n%throwable" charset="UTF-8"/>
         </File>
 	</Appenders>
 	
