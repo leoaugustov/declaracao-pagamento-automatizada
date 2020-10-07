@@ -42,15 +42,15 @@ public class Navegador {
 	
 	
 	private void realizarLogin(String ra, String senha) {
-		//fecha tela modal caso existam
-		clicarSeElementoExistir(By.cssSelector(".ui-dialog-buttonset button"));
-		
 		buscarElemento(By.name("matricula")).sendKeys(ra);
 		buscarElemento(By.name("senha")).sendKeys(senha);
 		buscarElemento(By.id("logar")).click();
 	}
 	
 	private void acessarExtratoFinanceiro() {
+		//fecha tela modal caso existam
+		clicarSeElementoExistir(By.cssSelector(".ui-dialog-buttonset button"));
+		
 		buscarElemento(By.cssSelector(".menu-search-bar i")).click();
 		buscarElemento(By.cssSelector("li[data-target=\"#menu_6\"]")).click();
 		buscarElemento(By.cssSelector("#menu_6 a li")).click();
