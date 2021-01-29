@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -30,9 +31,9 @@ public class App {
     	Parametros parametros = new Parametros();
     	
     	System.setProperty("webdriver.chrome.driver", parametros.getCaminhoWebDriver());
-        WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments("--headless"));
-        
+        WebDriver driver = null;
         try {
+        	driver = new ChromeDriver(new ChromeOptions().addArguments("--headless"));
         	DataUltimaParcelaPaga dataUltimaParcelaPaga = new DataUltimaParcelaPaga();
         	Navegador navegador = new Navegador(driver, new WebDriverWait(driver, 10));
             YearMonth data = transformarData(navegador.pegarDataUltimaParcelaPaga(parametros.getRegistroAcademicoUna(), parametros.getSenhaUna()));
@@ -67,11 +68,15 @@ public class App {
             }else {
             	log.info("O documento referente a data " +data.plusMonths(1)+ " ainda não está disponível.");
             }
-        
+        }catch(SessionNotCreatedException e) {
+        	log.error("Chrome Driver desatualizado. Será necessário realizar o download de um "
+        			+ "driver compatível com a versão do navegador instalado.", e);
         }catch(Exception e) {
         	log.error("Ocorreu um erro durante o processo.", e);
         }finally {
-        	driver.quit();
+        	if(driver != null) {
+        		driver.quit();
+        	}
         }
     }
     
